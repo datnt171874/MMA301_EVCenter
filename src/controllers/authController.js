@@ -105,3 +105,42 @@ export const register = async (req, res) => {
         });
     }
 };
+
+
+export const login = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        if (!email || !password) {
+            return res.status(400).json({ success: false, message: "Vui lòng nhập email và mật khẩu" });
+        }
+
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(401).json({ success: false, message: "Email hoặc mật khẩu không đúng" });
+        }
+
+        const isValid = await bcrypt.compare(password, user.passwordHash);
+        if (!isValid) {
+            return res.status(401).json({ success: false, message: "Email hoặc mật khẩu không đúng" });
+        }
+
+        const token = jwt.sign(
+            { userId: user._id, email: user.email, roleName: user.roleName },
+            JWT_SECRET,
+            { expiresIn: JWT_EXPIRES_IN }
+        );
+
+        return res.json({
+            success: true,
+            message: "Đăng nhập thành công",
+            data: {
+                user: { id: user._id, email: user.email, roleName: user.roleName },
+                token,
+            },
+        });
+    } catch (error) {
+        console.error("Login error:", error);
+        return res.status(500).json({ success: false, message: "Lỗi server khi đăng nhập" });
+    }
+};
