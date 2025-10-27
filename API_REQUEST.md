@@ -266,3 +266,89 @@ Ban đầu register thì role của User sẽ là Customer, nếu muốn trở t
   }
 }
 ```
+
+---
+
+## 🏪 Shop APIs
+
+### Get Shop Profile
+- URL: `GET /api/shop/profile`
+- Auth: Bearer token (SHOP)
+- Response 200:
+```json
+{
+  "success": true,
+  "data": {
+    "shop": {
+      "_id": "68f9b7dcf54f5f28eb4cc244",
+      "shopId": {
+        "_id": "68f9b7dcf54f5f28eb4cc244",
+        "email": "shop1@gmail.com",
+        "fullName": "Shop ABC",
+        "phoneNumber": "0123456789"
+      },
+      "shopName": "Shop ABC",
+      "address": "123 Đường ABC, Quận 1",
+      "description": "Chuyên bán xe điện",
+      "logo": "https://example.com/logo.jpg",
+      "isVerified": true,
+      "isActive": true
+    }
+  }
+}
+```
+
+### Update Shop Profile
+- URL: `PUT /api/shop/profile`
+- Auth: Bearer token (SHOP)
+- Body:
+```json
+{
+  "shopName": "Shop ABC",
+  "address": "123 Đường ABC, Quận 1",
+  "description": "Chuyên bán xe điện",
+  "logo": "https://example.com/logo.jpg"
+}
+```
+- Response 200:
+```json
+{
+  "success": true,
+  "message": "Cập nhật thông tin shop thành công",
+  "data": {
+    "shop": {
+      "_id": "68f9b7dcf54f5f28eb4cc244",
+      "shopName": "Shop ABC",
+      "address": "123 Đường ABC, Quận 1",
+      "description": "Chuyên bán xe điện",
+      "logo": "https://example.com/logo.jpg"
+    }
+  }
+}
+```
+
+### Upload Certificate
+- URL: `POST /api/shop/certificate`
+- Auth: Bearer token (SHOP)
+- Body:
+```json
+{
+  "sellingCertificate": "https://example.com/certificate.pdf"
+}
+```
+- Response 200:
+```json
+{
+  "success": true,
+  "message": "Upload giấy phép kinh doanh thành công, đang chờ Admin xác nhận",
+  "data": {
+    "shop": {
+      "_id": "68f9b7dcf54f5f28eb4cc244",
+      "shopId": "68f9b7dcf54f5f28eb4cc244",
+      "shopName": "Shop ABC",
+      "sellingCertificate": "https://example.com/certificate.pdf",
+      "isVerified": false
+    }
+  }
+}
+```
