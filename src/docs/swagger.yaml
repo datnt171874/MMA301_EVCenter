@@ -76,6 +76,7 @@ components:
 paths:
   /api/auth/register:
     post:
+      tags: [Auth]
       summary: Register user
       requestBody:
         required: true
@@ -106,6 +107,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /api/auth/login:
     post:
+      tags: [Auth]
       summary: Login
       requestBody:
         required: true
@@ -134,6 +136,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /api/auth/logout:
     post:
+      tags: [Auth]
       summary: Logout
       responses:
         200:
@@ -149,6 +152,7 @@ paths:
                     type: string
   /api/products:
     get:
+      tags: [Products]
       summary: Get all products (public)
       parameters:
         - name: page
@@ -185,6 +189,7 @@ paths:
         200:
           description: OK
     post:
+      tags: [Products]
       summary: Create product (Shop only)
       security:
         - bearerAuth: []
@@ -227,6 +232,7 @@ paths:
           description: Forbidden
   /api/products/{id}:
     get:
+      tags: [Products]
       summary: Get product by ID
       parameters:
         - name: id
@@ -240,6 +246,7 @@ paths:
         404:
           description: Not found
     put:
+      tags: [Products]
       summary: Update product (Shop owner only)
       security:
         - bearerAuth: []
@@ -270,6 +277,7 @@ paths:
         404:
           description: Not found
     delete:
+      tags: [Products]
       summary: Delete product (Shop owner only)
       security:
         - bearerAuth: []
@@ -286,6 +294,7 @@ paths:
           description: Not found
   /api/products/shop/my-products:
     get:
+      tags: [Products]
       summary: Get shop's products
       security:
         - bearerAuth: []
@@ -305,6 +314,7 @@ paths:
           description: OK
   /api/products/{id}/approve:
     put:
+      tags: [Products]
       summary: Approve product (Admin only)
       security:
         - bearerAuth: []
@@ -332,6 +342,7 @@ paths:
           description: OK
   /api/orders:
     post:
+      tags: [Orders]
       summary: Create order (Customer only)
       security:
         - bearerAuth: []
@@ -369,6 +380,7 @@ paths:
         201:
           description: Created
     get:
+      tags: [Orders]
       summary: Get customer orders
       security:
         - bearerAuth: []
@@ -392,6 +404,7 @@ paths:
           description: OK
   /api/orders/{id}:
     get:
+      tags: [Orders]
       summary: Get order by ID
       security:
         - bearerAuth: []
@@ -408,6 +421,7 @@ paths:
           description: Not found
   /api/orders/{id}/cancel:
     put:
+      tags: [Orders]
       summary: Cancel order
       security:
         - bearerAuth: []
@@ -425,6 +439,166 @@ paths:
               type: object
               properties:
                 reason:
+                  type: string
+      responses:
+        200:
+          description: OK
+  /api/packages:
+    get:
+      summary: Get all packages
+      tags: [Packages]
+      responses:
+        200:
+          description: OK
+    post:
+      summary: Purchase package
+      tags: [Packages]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [packageId]
+              properties:
+                packageId:
+                  type: string
+      responses:
+        201:
+          description: Created
+  /api/packages/shop/my-packages:
+    get:
+      summary: Get shop's packages
+      tags: [Packages]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        200:
+          description: OK
+  /api/packages/shop/remaining-posts:
+    get:
+      summary: Get remaining posts
+      tags: [Packages]
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: OK
+  /api/wallet:
+    get:
+      summary: Get wallet info
+      tags: [Wallet]
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: OK
+  /api/wallet/deposit:
+    post:
+      summary: Deposit money
+      tags: [Wallet]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [amount]
+              properties:
+                amount:
+                  type: number
+                method:
+                  type: string
+                  default: BANK_TRANSFER
+      responses:
+        201:
+          description: Created
+  /api/wallet/transactions:
+    get:
+      summary: Get transactions
+      tags: [Wallet]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+        - name: type
+          in: query
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+  /api/shop/profile:
+    get:
+      summary: Get shop profile
+      tags: [Shop]
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: OK
+    put:
+      summary: Update shop profile
+      tags: [Shop]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                shopName:
+                  type: string
+                address:
+                  type: string
+                description:
+                  type: string
+                logo:
+                  type: string
+      responses:
+        200:
+          description: OK
+  /api/shop/certificate:
+    post:
+      summary: Upload certificate
+      tags: [Shop]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [sellingCertificate]
+              properties:
+                sellingCertificate:
                   type: string
       responses:
         200:
