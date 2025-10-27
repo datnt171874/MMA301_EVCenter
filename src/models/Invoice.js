@@ -22,7 +22,7 @@ const invoiceSchema = new Schema(
     { timestamps: true }
 );
 
-billSchema.index({ customerId: 1, status: 1, createdAt: -1 });
+invoiceSchema.index({ customerId: 1, status: 1, createdAt: -1 });
 
 export const Invoice = mongoose.models.Invoice || mongoose.model("Invoice", invoiceSchema);
 

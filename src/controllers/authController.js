@@ -145,3 +145,18 @@ export const login = async (req, res) => {
     }
 };
 
+export const logout = async (req, res) => {
+    try {
+        res.json({
+            success: true,
+            message: "Đăng xuất thành công"
+        });
+    } catch (error) {
+        console.error("Logout error:", error);
+        res.status(500).json({
+            success: false,
+            message: "Lỗi server khi đăng xuất"
+        });
+    }
+};
+
