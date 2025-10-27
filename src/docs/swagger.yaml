@@ -92,6 +92,10 @@ paths:
                   type: string
                 confirmPassword:
                   type: string
+                roleName:
+                  type: string
+                  enum: [SHOP, CUSTOMER]
+                  default: CUSTOMER
       responses:
         201:
           description: Created

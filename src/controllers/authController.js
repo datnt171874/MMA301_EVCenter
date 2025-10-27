@@ -53,12 +53,15 @@ export const register = async (req, res) => {
         const saltRounds = 12;
         const passwordHash = await bcrypt.hash(password, saltRounds);
 
+        // Default role is CUSTOMER
+        const userRole = roleName || "CUSTOMER";
+
         
         const user = new User({
             fullName: "", 
             email,
             passwordHash,
-            roleName, 
+            roleName: userRole, 
             phoneNumber: "",
             address: "",
             dateOfBirth: null
@@ -66,12 +69,23 @@ export const register = async (req, res) => {
 
         await user.save();
 
-        
-        const customer = new Customer({
-            customerId: user._id,
-            dateOfBirth: null
-        });
-        await customer.save();
+        // Create profile based on role
+        if (userRole === "CUSTOMER") {
+            const customer = new Customer({
+                customerId: user._id,
+                dateOfBirth: null
+            });
+            await customer.save();
+        } else if (userRole === "SHOP") {
+            const shop = new Shop({
+                shopId: user._id,
+                shopName: "Shop của " + email,
+                address: "",
+                description: "",
+                isVerified: false
+            });
+            await shop.save();
+        }
 
        
         const token = jwt.sign(
