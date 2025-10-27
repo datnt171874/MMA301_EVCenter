@@ -7,6 +7,7 @@ import productRoutes from "./routes/productRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import packageRoutes from "./routes/packageRoutes.js";
 import walletRoutes from "./routes/walletRoutes.js";
+import shopRoutes from "./routes/shopRoutes.js";
 import { swaggerServe, swaggerSetup } from "./libs/swagger.js";
 
 
@@ -16,7 +17,7 @@ const PORT =  process.env.PORT || 3000;
 
 app.use(express.json());
 
-// Swagger
+// Swagger: http://localhost:3000/api-docs/
 app.use("/api-docs", swaggerServe, swaggerSetup);
 
 
@@ -25,6 +26,7 @@ app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/packages", packageRoutes);
 app.use("/api/wallet", walletRoutes);
+app.use("/api/shop", shopRoutes);
 
 connectDB().then(async () => {
     await initData();
