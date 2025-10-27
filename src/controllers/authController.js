@@ -13,7 +13,8 @@ export const register = async (req, res) => {
         const { 
             email, 
             password, 
-            confirmPassword
+            confirmPassword,
+            roleName
         } = req.body;
 
         
@@ -57,7 +58,7 @@ export const register = async (req, res) => {
             fullName: "", 
             email,
             passwordHash,
-            roleName: "CUSTOMER", 
+            roleName, 
             phoneNumber: "",
             address: "",
             dateOfBirth: null
