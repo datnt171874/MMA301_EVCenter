@@ -2,6 +2,7 @@ import { User } from "../models/User.js";
 import { Transaction, TRANSACTION_TYPES } from "../models/Wallet.js";
 import { ShopPackage } from "../models/ShopPackage.js";
 import { Package } from "../models/Package.js";
+import { Product, PRODUCT_STATUS } from "../models/Product.js";
 
 
 export const getStats = async (req, res) => {
@@ -109,6 +110,45 @@ export const banUser = async (req, res) => {
         res.status(500).json({
             success: false,
             message: "Lỗi server khi khóa/mở khóa user"
+        });
+    }
+};
+
+
+export const getProducts = async (req, res) => {
+    try {
+        const { page = 1, limit = 20, status } = req.query;
+        
+        let filter = {};
+        if (status) {
+            filter.status = status;
+        }
+
+        const products = await Product.find(filter)
+            .populate("shopId", "shopName logo address")
+            .sort({ createdAt: -1 })
+            .limit(limit * 1)
+            .skip((page - 1) * limit);
+
+        const total = await Product.countDocuments(filter);
+
+        res.json({
+            success: true,
+            data: {
+                products,
+                pagination: {
+                    current: Number(page),
+                    pages: Math.ceil(total / limit),
+                    total
+                }
+            }
+        });
+
+    } catch (error) {
+        console.error("Get products error:", error);
+        res.status(500).json({
+            success: false,
+            message: "Lỗi server khi lấy danh sách sản phẩm"
         });
     }
 };
