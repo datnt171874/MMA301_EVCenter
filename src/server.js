@@ -9,6 +9,7 @@ import orderRoutes from "./routes/orderRoutes.js";
 import packageRoutes from "./routes/packageRoutes.js";
 import walletRoutes from "./routes/walletRoutes.js";
 import shopRoutes from "./routes/shopRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
 import { swaggerServe, swaggerSetup } from "./libs/swagger.js";
 
 dotenv.config();
@@ -34,6 +35,7 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/packages", packageRoutes);
 app.use("/api/wallet", walletRoutes);
 app.use("/api/shop", shopRoutes);
+app.use("/api/admin", adminRoutes);
 
 connectDB().then(async () => {
   await initData();
