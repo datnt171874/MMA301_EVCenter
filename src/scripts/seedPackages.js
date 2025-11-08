@@ -1,5 +1,9 @@
+import dotenv from "dotenv";
 import { connectDB } from "../libs/db.js";
 import { Package, PACKAGE_TYPES } from "../models/Package.js";
+
+// Load environment variables
+dotenv.config();
 
 const seedPackages = async () => {
     try {
@@ -13,16 +17,23 @@ const seedPackages = async () => {
             {
                 name: "Gói Đồng",
                 type: PACKAGE_TYPES.BRONZE,
-                price: 0,
+                price: 50000,
                 freePosts: 4,
-                description: "Miễn phí 4 bài đăng đầu tiên"
+                description: "Gói đồng với 4 bài đăng miễn phí"
+            },
+            {
+                name: "Gói Bạc",
+                type: PACKAGE_TYPES.SILVER,
+                price: 100000,
+                freePosts: 6,
+                description: "Gói bạc với 6 bài đăng miễn phí"
             },
             {
                 name: "Gói Vàng",
                 type: PACKAGE_TYPES.GOLD,
-                price: 500000,
+                price: 200000,
                 freePosts: 8,
-                description: "Mua gói vàng để có 8 bài đăng miễn phí"
+                description: "Gói vàng với 8 bài đăng miễn phí"
             }
         ];
 
