@@ -57,6 +57,30 @@ export const authenticateToken = async (req, res, next) => {
 };
 
 
+export const optionalAuth = async (req, res, next) => {
+    try {
+        const authHeader = req.headers['authorization'];
+        const token = authHeader && authHeader.split(' ')[1];
+
+        if (token) {
+            try {
+                const decoded = jwt.verify(token, JWT_SECRET);
+                const user = await User.findById(decoded.userId);
+                if (user) {
+                    req.user = decoded;
+                }
+            } catch (error) {
+                // Token invalid or expired, but continue without auth
+                console.log("Optional auth failed:", error.message);
+            }
+        }
+        next();
+    } catch (error) {
+        // Continue without auth
+        next();
+    }
+};
+
 export const requireRole = (roles) => {
     return (req, res, next) => {
         if (!req.user) {

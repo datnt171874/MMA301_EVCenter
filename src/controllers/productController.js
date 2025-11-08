@@ -164,6 +164,26 @@ export const updateProduct = async (req, res) => {
             });
         }
 
+        // Shop chỉ có thể cập nhật status thành INACTIVE nếu sản phẩm đã APPROVED
+        // Không thể thay đổi status từ PENDING/REJECTED thành APPROVED (chỉ Admin mới làm được)
+        if (updates.status) {
+            if (updates.status === "INACTIVE" && product.status === "APPROVED") {
+                // Cho phép Shop ẩn sản phẩm đã được duyệt
+                product.status = "INACTIVE";
+            } else if (updates.status === "APPROVED" && product.status === "INACTIVE") {
+                // Cho phép Shop hiện lại sản phẩm đã bị ẩn
+                product.status = "APPROVED";
+            } else if (updates.status !== product.status) {
+                // Không cho phép thay đổi status khác
+                return res.status(403).json({
+                    success: false,
+                    message: "Bạn chỉ có thể ẩn/hiện sản phẩm đã được duyệt"
+                });
+            }
+            // Xóa status khỏi updates để không ghi đè lại
+            delete updates.status;
+        }
+
         Object.assign(product, updates);
         await product.save();
 
