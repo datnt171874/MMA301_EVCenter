@@ -2,6 +2,7 @@ import mongoose, { Schema } from "mongoose";
 
 export const PACKAGE_TYPES = {
     BRONZE: "BRONZE", // 4 posts miễn phí
+    SILVER: "SILVER", // 6 posts miễn phí
     GOLD: "GOLD",     // 8 posts miễn phí
 };
 
