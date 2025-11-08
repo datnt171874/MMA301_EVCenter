@@ -9,6 +9,7 @@ const userSchema = new Schema(
         phoneNumber: { type: String, trim: true },
         address: { type: String, trim: true },
         dateOfBirth: { type: Date },
+        isBanned: { type: Boolean, default: false },
     },
     { timestamps: true }
 );
