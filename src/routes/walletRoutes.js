@@ -2,7 +2,8 @@ import express from "express";
 import {
     getWalletInfo,
     getTransactions,
-    depositMoney
+    depositMoney,
+    withdrawMoney
 } from "../controllers/walletController.js";
 import { authenticateToken, requireRole } from "../middlewares/auth.js";
 
@@ -15,6 +16,7 @@ router.use(authenticateToken);
 router.get("/", requireRole(["SHOP"]), getWalletInfo);
 router.get("/transactions", requireRole(["SHOP"]), getTransactions);
 router.post("/deposit", requireRole(["SHOP"]), depositMoney);
+router.post("/withdraw", requireRole(["SHOP"]), withdrawMoney);
 
 export default router;
 
