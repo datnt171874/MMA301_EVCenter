@@ -122,3 +122,76 @@ export const depositMoney = async (req, res) => {
 };
 
 
+export const withdrawMoney = async (req, res) => {
+    try {
+        const { amount, bankAccount, bankName, accountHolder } = req.body;
+        const shopId = req.user.userId;
+
+        if (!amount || amount <= 0) {
+            return res.status(400).json({
+                success: false,
+                message: "Số tiền rút không hợp lệ"
+            });
+        }
+
+        if (!bankAccount || !bankName || !accountHolder) {
+            return res.status(400).json({
+                success: false,
+                message: "Vui lòng nhập đầy đủ thông tin tài khoản ngân hàng"
+            });
+        }
+
+        // Tìm ví
+        let wallet = await Wallet.findOne({ shopId });
+        if (!wallet) {
+            wallet = new Wallet({ shopId, balance: 0 });
+            await wallet.save();
+        }
+
+        // Kiểm tra số dư
+        if (wallet.balance < amount) {
+            return res.status(400).json({
+                success: false,
+                message: "Số dư không đủ để rút tiền"
+            });
+        }
+
+        // Tạo transaction
+        const transaction = new Transaction({
+            walletId: wallet._id,
+            shopId,
+            type: TRANSACTION_TYPES.WITHDRAW,
+            amount,
+            description: `Rút tiền về tài khoản ${bankName} - ${accountHolder} (${bankAccount})`,
+            status: TRANSACTION_STATUS.PENDING
+        });
+        await transaction.save();
+
+        // Trừ số dư
+        wallet.balance -= amount;
+        await wallet.save();
+
+        // Cập nhật transaction thành completed
+        transaction.status = TRANSACTION_STATUS.COMPLETED;
+        transaction.completedAt = new Date();
+        await transaction.save();
+
+        res.status(201).json({
+            success: true,
+            message: "Yêu cầu rút tiền đã được gửi thành công. Tiền sẽ được chuyển vào tài khoản của bạn trong vòng 1-3 ngày làm việc.",
+            data: {
+                transaction,
+                wallet: { balance: wallet.balance }
+            }
+        });
+
+    } catch (error) {
+        console.error("Withdraw money error:", error);
+        res.status(500).json({
+            success: false,
+            message: "Lỗi server khi rút tiền"
+        });
+    }
+};
+
+
